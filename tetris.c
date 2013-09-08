@@ -1,3 +1,5 @@
+// gcc -o tetris -lrt tetris.c
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -20,44 +22,200 @@
 #define PX_ER  10  /* edge right pixel */
 #define PX_EL  11  /* edge left pixel */
 
-#define MOVE_UP     0
-#define MOVE_DOWN   1
-#define MOVE_LEFT   2
-#define MOVE_RIGHT  3
-
+#define MOVE_DOWN   0
+#define MOVE_LEFT   1
+#define MOVE_RIGHT  2
+#define ROTATE      3
 
 // fucking coordinate !
 // #define x y
 // #define y x
 
-int g_pieces[7][2][4] =
+#define LG_PIECE   4
+#define NB_PIECE   7
+
+int g_pieces[NB_PIECE*4][LG_PIECE][LG_PIECE] =
 {
-   {{PX_I, PX_I, PX_I, PX_I},
+   /************************ 0 *****************************/
+   // I  0
+   {{PX_V, PX_V, PX_V, PX_V},
+    {PX_I, PX_I, PX_I, PX_I},
+    {PX_V, PX_V, PX_V, PX_V},
     {PX_V, PX_V, PX_V, PX_V}},
 
+   // O  0
    {{PX_O, PX_O, PX_V, PX_V},
-    {PX_O, PX_O, PX_V, PX_V}},
+    {PX_O, PX_O, PX_V, PX_V},
+    {PX_V, PX_V, PX_V, PX_V},
+    {PX_V, PX_V, PX_V, PX_V}},
 
-   {{PX_T, PX_T, PX_T, PX_V},
-    {PX_V, PX_T, PX_V, PX_V}},
+   // T  0
+   {{PX_V, PX_T, PX_V, PX_V},
+    {PX_T, PX_T, PX_T, PX_V},
+    {PX_V, PX_V, PX_V, PX_V},
+    {PX_V, PX_V, PX_V, PX_V}},
 
-   {{PX_L, PX_L, PX_L, PX_V},
-    {PX_L, PX_V, PX_V, PX_V}},
+   // L  0
+   {{PX_V, PX_V, PX_V, PX_V},
+    {PX_L, PX_L, PX_L, PX_V},
+    {PX_L, PX_V, PX_V, PX_V},
+    {PX_V, PX_V, PX_V, PX_V}},
 
+   // J  0
    {{PX_J, PX_V, PX_V, PX_V},
-    {PX_J, PX_J, PX_J, PX_V}},
+    {PX_J, PX_J, PX_J, PX_V},
+    {PX_V, PX_V, PX_V, PX_V},
+    {PX_V, PX_V, PX_V, PX_V}},
 
-   {{PX_Z, PX_Z, PX_V, PX_V},
-    {PX_V, PX_Z, PX_Z, PX_V}},
+   // Z  0
+   {{PX_V, PX_V, PX_V, PX_V},
+    {PX_Z, PX_Z, PX_V, PX_V},
+    {PX_V, PX_Z, PX_Z, PX_V},
+    {PX_V, PX_V, PX_V, PX_V}},
 
-   {{PX_V, PX_S, PX_S, PX_V},
-    {PX_S, PX_S, PX_V, PX_V}}
+   // S  0
+   {{PX_V, PX_V, PX_V, PX_V},
+    {PX_V, PX_S, PX_S, PX_V},
+    {PX_S, PX_S, PX_V, PX_V},
+    {PX_V, PX_V, PX_V, PX_V}},
+    
+   /************************ 90 *****************************/
+   // I  90
+   {{PX_V, PX_I, PX_V, PX_V},
+    {PX_V, PX_I, PX_V, PX_V},
+    {PX_V, PX_I, PX_V, PX_V},
+    {PX_V, PX_I, PX_V, PX_V}},
+
+   // O  90
+   {{PX_O, PX_O, PX_V, PX_V},
+    {PX_O, PX_O, PX_V, PX_V},
+    {PX_V, PX_V, PX_V, PX_V},
+    {PX_V, PX_V, PX_V, PX_V}},
+
+   // T  90
+   {{PX_V, PX_T, PX_V, PX_V},
+    {PX_V, PX_T, PX_T, PX_V},
+    {PX_V, PX_T, PX_V, PX_V},
+    {PX_V, PX_V, PX_V, PX_V}},
+
+   // L  90
+   {{PX_L, PX_V, PX_V, PX_V},
+    {PX_L, PX_V, PX_V, PX_V},
+    {PX_L, PX_L, PX_V, PX_V},
+    {PX_V, PX_V, PX_V, PX_V}},
+
+   // J  90
+   {{PX_V, PX_J, PX_J, PX_V},
+    {PX_V, PX_J, PX_V, PX_V},
+    {PX_V, PX_J, PX_V, PX_V},
+    {PX_V, PX_V, PX_V, PX_V}},
+
+   // Z  90
+   {{PX_V, PX_Z, PX_V, PX_V},
+    {PX_Z, PX_Z, PX_V, PX_V},
+    {PX_Z, PX_V, PX_V, PX_V},
+    {PX_V, PX_V, PX_V, PX_V}},
+
+   // S  90
+   {{PX_S, PX_V, PX_V, PX_V},
+    {PX_S, PX_S, PX_V, PX_V},
+    {PX_V, PX_S, PX_V, PX_V},
+    {PX_V, PX_V, PX_V, PX_V}},
+    
+    /************************ 180 *****************************/
+   // I  0
+   {{PX_V, PX_I, PX_V, PX_V},
+    {PX_V, PX_I, PX_V, PX_V},
+    {PX_V, PX_I, PX_V, PX_V},
+    {PX_V, PX_I, PX_V, PX_V}},
+
+   // O  0
+   {{PX_O, PX_O, PX_V, PX_V},
+    {PX_O, PX_O, PX_V, PX_V},
+    {PX_V, PX_V, PX_V, PX_V},
+    {PX_V, PX_V, PX_V, PX_V}},
+
+   // T  0
+   {{PX_T, PX_T, PX_T, PX_V},
+    {PX_V, PX_T, PX_V, PX_V},
+    {PX_V, PX_V, PX_V, PX_V},
+    {PX_V, PX_V, PX_V, PX_V}},
+
+   // L  0
+   {{PX_V, PX_V, PX_L, PX_V},
+    {PX_L, PX_L, PX_L, PX_V},
+    {PX_V, PX_V, PX_V, PX_V},
+    {PX_V, PX_V, PX_V, PX_V}},
+
+   // J  0
+   {{PX_V, PX_V, PX_V, PX_V},
+    {PX_J, PX_J, PX_J, PX_V},
+    {PX_V, PX_V, PX_J, PX_V},
+    {PX_V, PX_V, PX_V, PX_V}},
+
+   // Z  0
+   {{PX_V, PX_V, PX_V, PX_V},
+    {PX_Z, PX_Z, PX_V, PX_V},
+    {PX_V, PX_Z, PX_Z, PX_V},
+    {PX_V, PX_V, PX_V, PX_V}},
+
+   // S  0
+   {{PX_V, PX_V, PX_V, PX_V},
+    {PX_V, PX_S, PX_S, PX_V},
+    {PX_S, PX_S, PX_V, PX_V},
+    {PX_V, PX_V, PX_V, PX_V}},
+    
+   /************************ 270 *****************************/
+   // I  0
+   {{PX_V, PX_V, PX_V, PX_V},
+    {PX_I, PX_I, PX_I, PX_I},
+    {PX_V, PX_V, PX_V, PX_V},
+    {PX_V, PX_V, PX_V, PX_V}},
+
+   // O  0
+   {{PX_O, PX_O, PX_V, PX_V},
+    {PX_O, PX_O, PX_V, PX_V},
+    {PX_V, PX_V, PX_V, PX_V},
+    {PX_V, PX_V, PX_V, PX_V}},
+
+   // T  0
+   {{PX_V, PX_T, PX_V, PX_V},
+    {PX_T, PX_T, PX_T, PX_V},
+    {PX_V, PX_V, PX_V, PX_V},
+    {PX_V, PX_V, PX_V, PX_V}},
+
+   // L  0
+   {{PX_V, PX_V, PX_V, PX_V},
+    {PX_L, PX_L, PX_L, PX_V},
+    {PX_L, PX_V, PX_V, PX_V},
+    {PX_V, PX_V, PX_V, PX_V}},
+
+   // J  0
+   {{PX_J, PX_V, PX_V, PX_V},
+    {PX_J, PX_J, PX_J, PX_V},
+    {PX_V, PX_V, PX_V, PX_V},
+    {PX_V, PX_V, PX_V, PX_V}},
+
+   // Z  0
+   {{PX_V, PX_V, PX_V, PX_V},
+    {PX_Z, PX_Z, PX_V, PX_V},
+    {PX_V, PX_Z, PX_Z, PX_V},
+    {PX_V, PX_V, PX_V, PX_V}},
+
+   // S  0
+   {{PX_V, PX_V, PX_V, PX_V},
+    {PX_V, PX_S, PX_S, PX_V},
+    {PX_S, PX_S, PX_V, PX_V},
+    {PX_V, PX_V, PX_V, PX_V}}
 };
 
 typedef struct
 {
    int nb;
-   int type;
+   // current type
+   int ctype;
+   // new position
+   int ntype;
    // current position
    int cx;
    int cy;
@@ -71,14 +229,12 @@ typedef struct
 #define ASCII_PX_EV  "    " /* void */
 #define ASCII_PX_EL  "  <!" /* left */
 #define ASCII_PX_ER  "!>  " /* right */
-#define ASCII_PX_EB  "==" /* bottom */
-#define ASCII_PX_EB2 "\\/" /* bottom2 */
+#define ASCII_PX_EB  "=="   /* bottom */
+#define ASCII_PX_EB2 "\\/"  /* bottom2 */
 
 #define ASCII_PX_V  " ."
 #define ASCII_PX    "##"
 /******************************************/
-
-#define NB_PIECES 7
 
 int g_matrix[MATRIX_X][MATRIX_Y];
 int g_tps = 0;
@@ -88,16 +244,17 @@ T_PIECE g_piece;
 
 
 /******************************************************************************/
-/* empty the matrice */
+/* initialize the matrice and create rotated pieces*/
 /******************************************************************************/
-void emptyMatrix()
+void initMatrix()
 {
-   int x, y;
+   int i, x, y;
    // empty the matrix
    for (x=0; x<MATRIX_X; x++)
       for (y=0; y<MATRIX_Y; y++)
          g_matrix[x][y] = PX_V;
    
+   // create edges
    for (x=0; x<MATRIX_X; x++)
    {
       g_matrix[x][0]          = PX_EL;
@@ -107,6 +264,19 @@ void emptyMatrix()
    {
       g_matrix[MATRIX_X-1][y]  = PX_EB;
    }
+   
+//   // create rotated pieces
+//   for (i=0; i<3*NB_PIECE; i++)
+//   {
+//      // rotate +90
+//      for (x=0; x<LG_PIECE; x++)
+//      {
+//         for(y=0; y<LG_PIECE; y++)
+//         {
+//            g_pieces[i+NB_PIECE][x][y] = g_pieces[i][LG_PIECE-y-1][x];
+//         }
+//      }
+//   }
 }
 
 /******************************************************************************/
@@ -171,7 +341,7 @@ void printMatrix()
    
    fprintf(stdout, "tps   : %d\n", g_tps);
    fprintf(stdout, "piece : nb %d ; type %d ; pos [%d ; %d]\n",
-      g_piece.nb, g_piece.type, g_piece.cx, g_piece.cy);
+      g_piece.nb, g_piece.ctype, g_piece.cx, g_piece.cy);
    
 }
 
@@ -180,7 +350,7 @@ void printMatrix()
 /******************************************************************************/
 int getRandomPiece()
 {
-   return rand() % NB_PIECES;
+   return rand() % (NB_PIECE * 4);
 }
 
 /******************************************************************************/
@@ -192,21 +362,11 @@ int testPosition()
    int x,y;
 
    // collision
-   for (x=0; x<2; x++)
+   for (x=0; x<LG_PIECE; x++)
    {
-      for(y=0; y<4; y++)
+      for(y=0; y<LG_PIECE; y++)
       {
-// fprintf(stderr, "matrice[%d;%d]>[%d;%d]=%d piece[%d;%d]=%d (%d)\n",
-   // g_piece.cx + x,
-   // g_piece.cy + y,
-   // g_piece.nx + x,
-   // g_piece.ny + y,
-   // g_matrix[g_piece.nx + x][g_piece.ny + y],
-   // x,
-   // y,
-   // g_pieces[g_piece.type][x][y],
-   // g_piece.type);
-         if (g_pieces[g_piece.type][x][y]             != PX_V
+         if (g_pieces[g_piece.ntype][x][y]            != PX_V
           && g_matrix[g_piece.nx + x][g_piece.ny + y] != PX_V)
          {
             return 1;
@@ -223,11 +383,11 @@ void deletePiece()
 {
 // fprintf(stderr, "DBG deletePiece\n");
    int x,y;
-   for (x=0; x<2; x++)
+   for (x=0; x<LG_PIECE; x++)
    {
-      for(y=0; y<4; y++)
+      for(y=0; y<LG_PIECE; y++)
       {
-         if (g_pieces[g_piece.type][x][y] != PX_V)
+         if (g_pieces[g_piece.ctype][x][y] != PX_V)
          {
             g_matrix[g_piece.cx + x][g_piece.cy + y] = PX_V;
          }
@@ -243,20 +403,21 @@ void drawPiece()
 // fprintf(stderr, "DBG drawPiece\n");
    int x,y;
    // draw piece
-   for (x=0; x<2; x++)
+   for (x=0; x<LG_PIECE; x++)
    {
-      for(y=0; y<4; y++)
+      for(y=0; y<LG_PIECE; y++)
       {
-         if (g_pieces[g_piece.type][x][y] != PX_V)
+         if (g_pieces[g_piece.ntype][x][y] != PX_V)
          {
             g_matrix[g_piece.nx + x][g_piece.ny + y]
-                                               = g_pieces[g_piece.type][x][y];
+                                               = g_pieces[g_piece.ntype][x][y];
          }
       }
    }
    // set new posision
    g_piece.cx = g_piece.nx;
    g_piece.cy = g_piece.ny;
+   g_piece.ctype = g_piece.ntype;
 }
 
 /******************************************************************************/
@@ -269,11 +430,12 @@ int addPiece(int piece)
    
    // create piece
    g_piece.nb++;
-   g_piece.type = piece;
-   g_piece.nx   = 0;
-   g_piece.ny   = MATRIX_Y/2-2;
-   g_piece.cx   = g_piece.nx;
-   g_piece.cy   = g_piece.ny;
+   g_piece.ntype = piece;
+   g_piece.ctype = g_piece.ntype;
+   g_piece.nx    = 0;
+   g_piece.ny    = MATRIX_Y/2-2;
+   g_piece.cx    = g_piece.nx;
+   g_piece.cy    = g_piece.ny;
    
    // test the new position
    if (testPosition() == 1) return 1;
@@ -286,18 +448,23 @@ int addPiece(int piece)
 }
 
 /******************************************************************************/
+/* DEV : simulate player action */
+/******************************************************************************/
+int simPlayerAction()
+{
+    return rand()%10;
+}
+
+/******************************************************************************/
 /* move the current piece */
 /******************************************************************************/
 int movePiece(int move)
 {
 // fprintf(stderr, "DBG movePiece %d\n", move);
-   int test_pos;
+   int test_pos = 0;
    
    switch(move)
    {
-      case MOVE_UP:
-         g_piece.nx--;
-         break;
       case MOVE_DOWN:
          g_piece.nx++;
          break;
@@ -306,6 +473,13 @@ int movePiece(int move)
          break;
       case MOVE_RIGHT:
          g_piece.ny++;
+         break;
+      case ROTATE:
+         g_piece.ntype = (g_piece.ctype+NB_PIECE)%(4*NB_PIECE);
+         break;
+      default:
+         // unknown move
+         return 0;
          break;
    }
    
@@ -318,6 +492,7 @@ int movePiece(int move)
       // redraw piece, sorry
       g_piece.nx = g_piece.cx;
       g_piece.ny = g_piece.cy;
+      g_piece.ntype = g_piece.ctype;
       drawPiece();
       return test_pos;
    }
@@ -359,7 +534,7 @@ int main()
    }
    */
    
-   emptyMatrix();
+   initMatrix();
    printMatrix();
    
    res = 0;
@@ -370,7 +545,7 @@ int main()
       if (res != 0)
       {
          fprintf(stdout, "Can't add piece %d at pos [%d;%d], GAME OVER !\n",
-            g_piece.type, g_piece.nx, g_piece.ny);
+            g_piece.ctype, g_piece.nx, g_piece.ny);
          return 1;
       }
       printMatrix();
@@ -384,7 +559,7 @@ int main()
          // player can move the piece
          while (1)
          {
-            
+            movePiece(simPlayerAction());
             
             clock_gettime(CLOCK_REALTIME, &tac);
             if (( tac.tv_sec  - tic.tv_sec  ) * 1000000

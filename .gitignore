@@ -1,2 +1,5 @@
-./tetris
+# build files
+build/*
 
+# binaries
+bin/*

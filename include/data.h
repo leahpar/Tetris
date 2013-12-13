@@ -2,7 +2,7 @@
 #define DATA_H_INCLUDED
 
 #define LG_PIECE   4
-#define NB_PIECE   9
+#define NB_PIECE   7
 
 
 #define DISPLAY_TITLE 0

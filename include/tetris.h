@@ -2,7 +2,7 @@
 #define TETRIS_SDL_H_INCLUDED
 
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_Mixer.h>
+#include <SDL2/SDL_mixer.h>
 
 
 /**** PIXELS ******************************/

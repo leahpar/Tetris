@@ -12,13 +12,14 @@
 
 /* http://www.libsdl.org/projects/SDL_mixer */
 /* http://www.kekkai.org/roger/sdl/mixer */
-#include <SDL2/SDL_Mixer.h>
+#include <SDL2/SDL_mixer.h>
 
 /*
 use SDL 2.0
 http://www.siteduzero.com/forum/sujet/installation-sdl-2-code-blocks
 */
 
+#include "device.h"
 #include "config.h"
 #include "tetris.h"
 #include "data.h"
@@ -29,36 +30,6 @@ http://www.siteduzero.com/forum/sujet/installation-sdl-2-code-blocks
 #endif
 #ifndef DISPLAY_MODE_SDL
 #define printMatrix(a) printMatrix_CLI(a)
-#endif
-
-
-
-#ifdef LINUX
-#define clear() system("clear")
-long getTicTime() {
-{
-   struct timespec time;
-
-   clock_gettime(CLOCK_REALTIME, &time);
-   return time.tv_sec * 1000000 + time.tv_nsec / 1000;
-}
-#endif
-#ifdef WIN32
-#include <Windows.h>
-#define clear() system("cls")
-/* linux : usleep(usec) / Windows : Sleep(msec) */
-#define usleep(x) Sleep(x/1000)
-long getTicTime() {
-     LARGE_INTEGER s_frequency;
-     BOOL s_use_qpc = QueryPerformanceFrequency(&s_frequency);
-    if (s_use_qpc) {
-        LARGE_INTEGER now;
-        QueryPerformanceCounter(&now);
-        return (1000LL * now.QuadPart) / s_frequency.QuadPart;
-    } else {
-        return GetTickCount();
-    }
-}
 #endif
 
 
@@ -456,7 +427,7 @@ int addPiece(int piece)
 /******************************************************************************/
 /* pause */
 /******************************************************************************/
-int pause(char * str)
+int gamePause(char * str)
 {
    fprintf(stderr, "__PAUSE");
    int action = ACTION_NONE;
@@ -526,7 +497,7 @@ int simPlayerAction()
             // Set pause on focus lost
             if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
             {
-               ret = pause("Pause...");
+               ret = gamePause("Pause...");
             }
             break;
          case SDL_QUIT:
@@ -570,7 +541,7 @@ int simPlayerAction()
                break;
             case SDLK_p:
             case SDLK_LALT:
-               ret = pause("Pause...");
+               ret = gamePause("Pause...");
                break;
             default:
                ret = ACTION_NONE;
@@ -651,14 +622,14 @@ int LoadTileSet()
 
    if (access(TILESET_FILE, F_OK) != 0)
    {
-      MessageBox(NULL, "File %s not found !", NULL, 0);
+      Alert(NULL, "File %s not found !", NULL, 0);
       return 1;
    }
 
    img = SDL_LoadBMP(TILESET_FILE);
    if (img == NULL)
    {
-      MessageBox(NULL, SDL_GetError(), NULL, 0);
+      Alert(NULL, SDL_GetError(), NULL, 0);
       return 1;
    }
    /* SDL 1.2
@@ -717,12 +688,12 @@ int initTetris()
    // Init audio
    if (Mix_OpenAudio(AUDIO_RATE, AUDIO_FORMAT, AUDIO_CHANNELS, AUDIO_BUFFERS))
    {
-      MessageBox(NULL, Mix_GetError(), NULL, 0);
+      Alert(NULL, Mix_GetError(), NULL, 0);
       return 1;
    }
    g_screen.sound = Mix_LoadMUS(AUDIO_FILE);
    if(g_screen.sound == NULL) {
-      MessageBox(NULL, Mix_GetError(), NULL, 0);
+      Alert(NULL, Mix_GetError(), NULL, 0);
       return 1;
    }
    //Mix_PlayMusic(g_screen.sound, -1);
@@ -730,7 +701,7 @@ int initTetris()
    // load textures
    if (LoadTileSet() != 0)
    {
-      MessageBox(NULL, SDL_GetError(), NULL, 0);
+      Alert(NULL, SDL_GetError(), NULL, 0);
       return 1;
    }
 
@@ -849,7 +820,7 @@ int main(int argc, char **argv)
       }
    }
 
-   pause("GAME OVER");
+   gamePause("GAME OVER");
 
    // save high scores
    f = fopen(SCORE_FILENAME, "w");

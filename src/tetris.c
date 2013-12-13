@@ -4,20 +4,9 @@
 #include <unistd.h>  /* sleep */
 #include <time.h>
 
-/* http://www.libsdl.org */
 #include <SDL2/SDL.h>
-
-/* http://www.libsdl.org/projects/SDL_ttf */
 #include <SDL2/SDL_ttf.h>
-
-/* http://www.libsdl.org/projects/SDL_mixer */
-/* http://www.kekkai.org/roger/sdl/mixer */
 #include <SDL2/SDL_mixer.h>
-
-/*
-use SDL 2.0
-http://www.siteduzero.com/forum/sujet/installation-sdl-2-code-blocks
-*/
 
 #include "device.h"
 #include "config.h"
@@ -32,7 +21,7 @@ http://www.siteduzero.com/forum/sujet/installation-sdl-2-code-blocks
 #define printMatrix(a) printMatrix_CLI(a)
 #endif
 
-
+/* matrix data */
 int g_matrix[MATRIX_X][MATRIX_Y];
 T_PIECE g_piece;
 T_SCORE g_score;
@@ -44,6 +33,9 @@ void levelUp()
    g_score.level++;
 }
 
+/******************************************************************************/
+/* display text on the screen */
+/******************************************************************************/
 void printText(char * str)
 {
    SDL_Surface * surface;
@@ -69,6 +61,9 @@ void printText(char * str)
 }
 
 
+/******************************************************************************/
+/* print score, level, highscores... */
+/******************************************************************************/
 void printScore()
 {
    SDL_Surface * surface;
@@ -80,7 +75,6 @@ void printScore()
    // level
    // lines
    // next piece
-
 
    sprintf(g_display[DISPLAY_SCORE][1], "%d", g_score.score);
    sprintf(g_display[DISPLAY_LEVEL][1], "%d", g_score.level);
@@ -130,9 +124,6 @@ void printMatrix_SDL(char * str)
    SDL_Rect rect;
 
    // clean screen
-   /* SDL 1.2
-   SDL_FillRect(g_screen.screen, NULL, 0);
-   */
    SDL_SetRenderDrawColor(g_screen.renderer, 0, 0, 0, 255);
    SDL_RenderClear(g_screen.renderer);
 
@@ -145,12 +136,7 @@ void printMatrix_SDL(char * str)
          rect.w = TILE_S;
          rect.y = x * TILE_S;
          rect.x = y * TILE_S;
-         /* SDL 1.2
-         SDL_BlitSurface(g_screen.tileset,
-                         &(g_screen.props[g_matrix[x][y]].R),
-                         g_screen.screen,
-                         &rect);
-         */
+
          SDL_RenderCopy(g_screen.renderer,
                         g_screen.tileset,
                         &(g_screen.props[g_matrix[x][y]].R),
@@ -167,12 +153,7 @@ void printMatrix_SDL(char * str)
          rect.w = TILE_S;
          rect.y = SCORE_DISPLAY_X + (x+DISPLAY_COUNT-NB_HIGHSCORE-1-4) * TILE_S;
          rect.x = y * TILE_S + SCORE_DISPLAY_Y;
-         /* SDL 1.2
-         SDL_BlitSurface(g_screen.tileset,
-                         &(g_screen.props[g_pieces[g_score.nextPiece][x][y]].R),
-                         g_screen.screen,
-                         &rect);
-         */
+
          SDL_RenderCopy(g_screen.renderer,
                         g_screen.tileset,
                         &(g_screen.props[g_pieces[g_score.nextPiece][x][y]].R),
@@ -183,20 +164,18 @@ void printMatrix_SDL(char * str)
    // Print score
    printScore();
 
-   // print text
+   // print text ("PAUSE", "GAME OVER"...)
    if (str != NULL)
    {
       printText(str);
    }
 
-
-   /* SDL 1.2
-   SDL_Flip(g_screen.screen);
-   */
    SDL_RenderPresent(g_screen.renderer);
 }
 
-
+/******************************************************************************/
+/* print matrix on the console */
+/******************************************************************************/
 void printMatrix_CLI(char * str)
 {
    int x,y;
@@ -206,7 +185,6 @@ void printMatrix_CLI(char * str)
 
    for (x=0; x<MATRIX_X-1; x++)
    {
-      //fprintf(stdout, "%.2d", x);
       for (y=0; y<MATRIX_Y; y++)
       {
          switch (g_matrix[x][y])
@@ -237,7 +215,6 @@ void printMatrix_CLI(char * str)
                break;
          }
       }
-      // fprintf(stdout, ASCII_PX_ER);
       fprintf(stdout, "\n");
    }
 
@@ -277,7 +254,6 @@ int getRandomPiece()
 /******************************************************************************/
 int testPosition()
 {
-// fprintf(stderr, "DBG testPosition\n");
    int x,y;
 
    // collision
@@ -300,7 +276,6 @@ int testPosition()
 /******************************************************************************/
 void deletePiece()
 {
-// fprintf(stderr, "DBG deletePiece\n");
    int x,y;
    for (x=0; x<LG_PIECE; x++)
    {
@@ -377,7 +352,6 @@ void checkLine()
 /******************************************************************************/
 void drawPiece()
 {
-// fprintf(stderr, "DBG drawPiece\n");
    int x,y;
    // draw piece
    for (x=0; x<LG_PIECE; x++)
@@ -402,8 +376,6 @@ void drawPiece()
 /******************************************************************************/
 int addPiece(int piece)
 {
-// fprintf(stderr, "DBG addPiece %d\n", piece);
-
    g_score.score += SCORE_PIECE;
    // create piece
    g_score.pieces++;
@@ -481,11 +453,11 @@ int gamePause(char * str)
 }
 
 /******************************************************************************/
-/* DEV : simulate player action */
+/* get the player's action */
+/* handle keyboard events  */
 /******************************************************************************/
-int simPlayerAction()
+int getPlayerAction()
 {
-   /* dev  return rand()%10; */
    int ret = ACTION_NONE;
    SDL_Event event;
 
@@ -560,7 +532,6 @@ int simPlayerAction()
 /******************************************************************************/
 int movePiece(int move)
 {
-// fprintf(stderr, "DBG movePiece %d\n", move);
    int test_pos = 0;
 
    // delete piece at current position...
@@ -613,13 +584,15 @@ int movePiece(int move)
 }
 
 
+/******************************************************************************/
+/* Load texture as the tileset */
+/******************************************************************************/
 int LoadTileSet()
 {
    int i;
    SDL_Surface* img;
 
    // load texture
-
    if (access(TILESET_FILE, F_OK) != 0)
    {
       Alert(NULL, "File %s not found !", NULL, 0);
@@ -632,9 +605,6 @@ int LoadTileSet()
       Alert(NULL, SDL_GetError(), NULL, 0);
       return 1;
    }
-   /* SDL 1.2
-   g_screen.tileset = (SDL_Surface*) SDL_DisplayFormat(img);
-   */
    g_screen.tileset = SDL_CreateTextureFromSurface(g_screen.renderer, img);
    SDL_FreeSurface(img);
 
@@ -696,6 +666,7 @@ int initTetris()
       Alert(NULL, Mix_GetError(), NULL, 0);
       return 1;
    }
+   // default : mute
    //Mix_PlayMusic(g_screen.sound, -1);
 
    // load textures
@@ -705,7 +676,7 @@ int initTetris()
       return 1;
    }
 
-   //get high scores
+   // get high scores
    f = fopen(SCORE_FILENAME, "r");
    if (f != NULL)
    {
@@ -717,7 +688,7 @@ int initTetris()
 }
 
 /******************************************************************************/
-/* initialize the matrice and create rotated pieces*/
+/* initialize the matrix */
 /******************************************************************************/
 void initMatrix()
 {
@@ -782,7 +753,7 @@ int main(int argc, char **argv)
          while (1)
          {
             usleep(10000);
-            umove = simPlayerAction();
+            umove = getPlayerAction();
             // Quit game
             if (umove == ACTION_QUIT) return 1;
             // Reset tic counter so player can move piece

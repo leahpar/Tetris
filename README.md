@@ -30,10 +30,6 @@ make
 Get dependancies
 
 ```
-# get cross compiler
-# warning, version >= 4.7 needed
-apt-get install g++-mingw-w64-i686
-
 # get SDL2
 cd /tmp
 wget http://www.libsdl.org/release/SDL2-devel-2.0.1-mingw.tar.gz

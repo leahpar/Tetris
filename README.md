@@ -38,17 +38,17 @@ soon...
 
 ### Linux
 
-[see here](doc/cc-linux.md)
+[see here](docs/cc-linux.md)
 
 ### Windows
 
 (cross compilation from Linux)
 
-[see here](doc/cc-windows.md)
+[see here](docs/cc-windows.md)
 
 ### OSX
 
 (Using gcc via homebrew)
 
-[see here](doc/cc-osx.md)
+[see here](docs/cc-osx.md)
 

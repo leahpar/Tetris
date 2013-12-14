@@ -664,7 +664,7 @@ int initTetris()
    g_screen.sound = Mix_LoadMUS(AUDIO_FILE);
    if(g_screen.sound == NULL) {
       Alert(NULL, Mix_GetError(), NULL, 0);
-      return 1;
+      //return 1;
    }
    // default : mute
    //Mix_PlayMusic(g_screen.sound, -1);

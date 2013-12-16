@@ -2,7 +2,8 @@
 
 (cross compilation from Linux)
 
-This example is for a Debian 64 bits. You may easily adapt thoses commands for your distribution.
+This example is for a Debian 64 bits targeting a windows 32 bits.
+You may easily adapt thoses commands for your distribution.
 
 ## Get dependancies
 
@@ -66,18 +67,10 @@ cmake -DCMAKE_TOOLCHAIN_FILE=../Toolchain-mingw32.cmake ..
 make
 ```
 
-## Prepare environment
+## Export package
 
 ```
-cd /path/to/your/Tetris
-mkdir Tetris
-# ger binary
-cp bin/tetris.exe Tetris/
-# get ressources
-cp ressources/tetris* Tetris/
-# get dlls
-cp /tmp/SDL2*/bin/*.dll Tetris/
-# make a zip
-zip -r Tetris.zip Tetris
+./deploy-win.sh
 ```
 
+This script download SDL2 dlls, compile project, and make a zip you can distribute

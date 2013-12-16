@@ -19,4 +19,14 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
+# DLLs
+# This section is used by deploy-win.sh to get dlls
+# libfreetype-6.dll
+# libogg-0.dll
+# libvorbis-0.dll
+# libvorbisfile-3.dll
+# SDL2.dll
+# SDL2_image.dll
+# SDL2_ttf.dll
+# SDL2_mixer.dll
 

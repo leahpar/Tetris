@@ -78,7 +78,11 @@ cp bin/tetris.exe ${package}/
 
 cp ressources/* ${package}/
 
-cp /tmp/SDL2/*.dll ${package}/
+#cp /tmp/SDL2/*.dll ${package}/
+for dll in `grep "\.dll" ${PRJ}/Toolchain-mingw32.cmake | cut -d ' ' -f 2`
+do
+   cp /tmp/SDL2/$dll ${package}/
+done
 
 echo "making zip..."
 

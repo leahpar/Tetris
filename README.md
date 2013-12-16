@@ -11,7 +11,7 @@
 - m : music
 
 
-## Get Tetris binary
+## Get Tetris
 
 ### Linux
 
@@ -19,7 +19,7 @@ soon...
 
 ### Windows
 
-soon...
+[here](http://raphael.bacco.fr/games/Tetris/)
 
 ### OSX
 

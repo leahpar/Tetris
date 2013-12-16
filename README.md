@@ -13,7 +13,7 @@
 
 ## Get Tetris
 
-Tetris is available [here](http://raphael.bacco.fr/games/Tetris/) for Windows, Linux (soon) and OSX (soon).
+Standalone Tetris is available [here](http://raphael.bacco.fr/games/Tetris/) for Windows, Linux (soon) and OSX (soon).
 
 Or you can compile it yourself, see below.
 

@@ -73,4 +73,4 @@ make
 ./deploy-win.sh
 ```
 
-This script download SDL2 dlls, compile project, and make a zip you can distribute
+This script download SDL2 dlls, compile project, and make a standalone zip you can distribute.

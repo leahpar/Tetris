@@ -52,3 +52,7 @@ soon...
 
 [see here](docs/cc-osx.md)
 
+## Changelog
+
+[see here](ChangeLog.md)
+

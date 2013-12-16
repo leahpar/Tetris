@@ -2,7 +2,9 @@
 
 version=`grep "^\*" ChangeLog.md | head -1 | cut -d ' ' -f 2 | tr -d 'v'`
 codexe=`date "+%Y%m%d%H%M%S"`
-package="Tetris-${version}-${codexe}"
+os="win32"
+package="Tetris-${version}"
+package2="Tetris-${version}-${os}-${codexe}"
 
 PRJ=`pwd`
 
@@ -86,16 +88,16 @@ done
 
 echo "making zip..."
 
-zip -q -r ${package}.zip ${package}
+zip -q -r ${package2}.zip ${package}
 
-mv ${package}.zip bin/
+mv ${package2}.zip bin/
 
 echo "clean..."
 
-rm -rf ${package}.zip ${package} 
+rm -rf ${package2}.zip ${package} 
 
 echo ""
 echo "done."
 
-ls bin/${package}.zip
+ls bin/${package2}.zip
 

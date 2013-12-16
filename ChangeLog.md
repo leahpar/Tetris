@@ -1,3 +1,9 @@
+* v0.9 - 2013-12-16
+    * add Linux toolchain
+    * add Windows toolchain
+    * add OSX toolchain
+    * add documentation
+
 * v0.4 - 2013-09-12
     * save high scores
 

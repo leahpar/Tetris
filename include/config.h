@@ -1,7 +1,7 @@
 #ifndef CONFIG_H_INCLUDED
 #define CONFIG_H_INCLUDED
 
-#define WINDOW_TITLE "Tetris beta"
+#define WINDOW_TITLE "Tetris"
 
 #define DT_USLEEP  30000
 
@@ -12,13 +12,13 @@
 #define SCORE_DISPLAY_X (2*TILE_S)
 
 #define FONT_SIZE 22
-#define FONT_FILE "tetris.ttf"
+#define FONT_FILE "ressources/font.dat"
 #define FONT_COLOR (SDL_Color){128,128,128}
 
-#define TILESET_FILE "texture.bmp"
+#define TILESET_FILE "ressources/texture.dat"
 #define TILE_S 30
 
-#define AUDIO_FILE "tetris.ogg"
+#define AUDIO_FILE "ressources/music.dat"
 #define AUDIO_RATE 22050
 #define AUDIO_FORMAT AUDIO_S16SYS
 /* mono */

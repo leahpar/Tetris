@@ -1,13 +1,14 @@
 #!/bin/sh
 
 version=`grep "^\*" ChangeLog.md | head -1 | cut -d ' ' -f 2 | tr -d 'v'`
-codexe=`date "+%Y%m%d%H%M%S"`
+codexe=`git log -1 --format=%ci | sed "s/[^0-9]//g" | cut -b1-12`
 os="win32"
-package="Tetris-${version}"
-package2="Tetris-${version}-${os}-${codexe}"
+project="Tetris"
+package="${project}-${version}"
+package2="${project}-${version}-${os}-${codexe}"
 
 PRJ=`pwd`
-
+BIN=tetris.exe
 
 # colors
 gri="\033[0m"
@@ -76,9 +77,9 @@ cd ..
 
 mkdir ${package}
 
-cp bin/tetris.exe ${package}/
+cp bin/${BIN} ${package}/
 
-cp ressources/* ${package}/
+cp -r ressources ${package}/
 
 #cp /tmp/SDL2/*.dll ${package}/
 for dll in `grep "\.dll" ${PRJ}/Toolchain-mingw32.cmake | cut -d ' ' -f 2`
@@ -90,6 +91,7 @@ echo "making zip..."
 
 zip -q -r ${package2}.zip ${package}
 
+rm -f bin/${package2}.zip 2>/dev/null
 mv ${package2}.zip bin/
 
 echo "clean..."

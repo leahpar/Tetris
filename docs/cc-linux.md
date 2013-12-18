@@ -22,6 +22,14 @@ cmake ..
 make
 ```
 
+Or you can use the all-in-one command line
+
+```
+git clone https://github.com/leahpar/Tetris.git
+cd Tetris
+gcc src/tetris.c -o bin/tetris -Iinclude -I/usr/include/SDL2 -L/usr/lib/x86_64-linux-gnu -lSDL2 -lSDL2main -lSDL2_image -lSDL2_ttf -lSDL2_mixer
+```
+
 ## Execute
 
 ```

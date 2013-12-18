@@ -56,7 +56,7 @@ sudo cp -R include lib /usr/i686-w64-mingw32
 ### get cross compiler
 
 ```
-apt-get install g++-mingw-w64-i686
+apt-get install gcc-mingw-w64-i686
 ```
 
 ### Compile
@@ -65,6 +65,12 @@ apt-get install g++-mingw-w64-i686
 cd build
 cmake -DCMAKE_TOOLCHAIN_FILE=../Toolchain-mingw32.cmake ..
 make
+```
+
+Or you can use the all-in-one command 
+
+```
+i686-w64-mingw32-gcc src/* -o bin/tetris.exe -Iinclude -I/usr/i686-w64-mingw32/includes -L/usr/i686-w64-mingw32/lib -lSDL2 -lSDL2_ttf -lSDL2_image -lSDL2_mixer -lSDL2main -mwindows -lmingw32
 ```
 
 ## Export package

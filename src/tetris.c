@@ -13,6 +13,8 @@
 #include "tetris.h"
 #include "data.h"
 
+// printMatrix_CLI was used before I included SDL
+// but it is not completely working
 #define DISPLAY_MODE_SDL
 #ifdef DISPLAY_MODE_SDL
 #define printMatrix(a) printMatrix_SDL(a)
@@ -641,6 +643,7 @@ int initTetris()
    // init rand
    srand(time(NULL));
 
+#ifdef DISPLAY_MODE_SDL
    // Init SDL
    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
    g_screen.screen = SDL_CreateWindow(WINDOW_TITLE,
@@ -675,6 +678,9 @@ int initTetris()
       Alert(NULL, SDL_GetError(), NULL, 0);
       return 1;
    }
+#else
+   SDL_Init(SDL_INIT_VIDEO);
+#endif
 
    // get high scores
    f = fopen(SCORE_FILENAME, "r");
@@ -810,6 +816,7 @@ int main(int argc, char **argv)
       fclose(f);
    }
 
+#ifdef DISPLAY_MODE_SDL
    TTF_CloseFont(g_screen.font);
    TTF_Quit();
 
@@ -819,6 +826,7 @@ int main(int argc, char **argv)
    SDL_DestroyTexture(g_screen.tileset);
    SDL_DestroyRenderer(g_screen.renderer);
    SDL_DestroyWindow(g_screen.screen);
+#endif
    SDL_Quit();
 
    return 0;

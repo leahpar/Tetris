@@ -46,7 +46,7 @@ make
 
 ```
 cd ..
-cp ressources/* bin
+cp -r ressources bin/
 ./bin/tetris
 ```
 

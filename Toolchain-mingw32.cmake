@@ -25,6 +25,7 @@ set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 # libogg-0.dll
 # libvorbis-0.dll
 # libvorbisfile-3.dll
+# zlib1.dll
 # SDL2.dll
 # SDL2_image.dll
 # SDL2_ttf.dll
